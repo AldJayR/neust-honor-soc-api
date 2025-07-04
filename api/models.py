@@ -47,10 +47,10 @@ class GWARecord(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('student', 'semester', 'year')
+        unique_together = ('student', 'semester', 'academic_year')
 
     def __str__(self):
-        return f"{self.student} - {self.semester} {self.year}: {self.gwa}"
+        return f"{self.student} - {self.semester} {self.academic_year}: {self.gwa}"
     
 class HonorSocietyOfficer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

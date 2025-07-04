@@ -6,3 +6,15 @@ djangorestframework_simplejwt==5.5.0
 PyJWT==2.9.0
 sqlparse==0.5.3
 tzdata==2025.2
+
+# Production dependencies
+psycopg2-binary==2.9.9
+whitenoise==6.8.2
+gunicorn==23.0.0
+python-dotenv==1.0.1
+
+# Development dependencies (install with pip install -r requirements-dev.txt)
+# pytest==8.3.4
+# pytest-django==4.9.0
+# black==24.10.0
+# flake8==7.1.1
