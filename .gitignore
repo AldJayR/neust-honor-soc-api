@@ -97,3 +97,4 @@ docker-compose.override.yml
 
 
 prepare_deployment.bat
+run_server.bat
