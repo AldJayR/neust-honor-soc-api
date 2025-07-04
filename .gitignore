@@ -94,3 +94,6 @@ secrets.json
 # Docker files (optional, if using docker)
 *.log
 docker-compose.override.yml
+
+
+prepare_deployment.bat
