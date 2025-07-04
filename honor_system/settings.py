@@ -20,7 +20,7 @@ TESTING = 'test' in sys.argv or 'pytest' in sys.modules
 # Load environment variables from .env file in development
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(override=True)
 except ImportError:
     pass
 
