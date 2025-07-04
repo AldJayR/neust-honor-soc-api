@@ -5,6 +5,15 @@
 echo "🚀 Starting Honor Society API deployment..."
 echo "==========================================="
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+    echo "📋 Loading environment variables from .env file..."
+    export $(cat .env | grep -v '^#' | grep -v '^$' | xargs)
+    echo "✅ Environment variables loaded"
+else
+    echo "⚠️  .env file not found, using default values"
+fi
+
 # Install dependencies
 echo "📦 Installing dependencies..."
 pip install -r requirements.txt
@@ -14,27 +23,20 @@ echo "🗄️ Running database migrations..."
 python manage.py makemigrations api
 python manage.py migrate
 
-
 # Create superuser if it doesn't exist
 echo "👤 Creating Django superuser (if not exists)..."
-python manage.py shell << END
-import os
-from django.contrib.auth import get_user_model
-User = get_user_model()
-username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
-email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
-password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'changeme123')
-if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username, email, password)
-    print(f"Superuser '{username}' created.")
-else:
-    print(f"Superuser '{username}' already exists.")
-END
+if python manage.py createsuperuser --noinput \
+    --username "${DJANGO_SUPERUSER_USERNAME:-admin}" \
+    --email "${DJANGO_SUPERUSER_EMAIL:-admin@example.com}" \
+    2>/dev/null; then
+    echo "✅ Superuser created successfully"
+else
+    echo "ℹ️  Superuser already exists or creation was skipped"
+fi
 
 # Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
-
 
 # Run tests to ensure everything works
 echo "🧪 Running tests..."
