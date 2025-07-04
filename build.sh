@@ -14,6 +14,18 @@ echo "🗄️ Running database migrations..."
 python manage.py makemigrations api
 python manage.py migrate
 
+# Create superuser if it doesn't exist
+echo "👤 Creating Django superuser (if not exists)..."
+python manage.py shell << END
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'jaexcdev@gmail.com', '934IO-j')
+    print("Superuser 'admin' created with password 'changeme123'")
+else:
+    print("Superuser 'admin' already exists.")
+END
+
 # Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
