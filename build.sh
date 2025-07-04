@@ -20,6 +20,16 @@ pip install -r requirements.txt
 
 
 
+
+# Collect static files
+echo "📁 Collecting static files..."
+python manage.py collectstatic --noinput
+
+# Run database migrations
+echo "🗄️ Running database migrations..."
+python manage.py makemigrations
+python manage.py migrate
+
 # Create superuser if it doesn't exist
 echo "👤 Creating Django superuser (if not exists)..."
 if python manage.py createsuperuser --noinput \
@@ -31,14 +41,6 @@ else
     echo "ℹ️  Superuser already exists or creation was skipped"
 fi
 
-# Collect static files
-echo "📁 Collecting static files..."
-python manage.py collectstatic --noinput
-
-# Run database migrations
-echo "🗄️ Running database migrations..."
-python manage.py makemigrations
-python manage.py migrate
 
 # Run tests to ensure everything works
 echo "🧪 Running tests..."
