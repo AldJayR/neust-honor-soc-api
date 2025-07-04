@@ -18,10 +18,7 @@ fi
 echo "📦 Installing dependencies..."
 pip install -r requirements.txt
 
-# Run database migrations
-echo "🗄️ Running database migrations..."
-python manage.py makemigrations
-python manage.py migrate
+
 
 # Create superuser if it doesn't exist
 echo "👤 Creating Django superuser (if not exists)..."
@@ -37,6 +34,11 @@ fi
 # Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
+
+# Run database migrations
+echo "🗄️ Running database migrations..."
+python manage.py makemigrations
+python manage.py migrate
 
 # Run tests to ensure everything works
 echo "🧪 Running tests..."
