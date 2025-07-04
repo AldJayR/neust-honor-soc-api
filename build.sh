@@ -36,11 +36,6 @@ python manage.py migrate
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Create superuser if it doesn't exist
-echo "👤 Setting up admin user..."
-python manage.py shell -c "
-from django.contrib.auth import get_user_model
-from api.models import Campus, HonorSocietyOfficer
 
 # Run tests to ensure everything works
 echo "🧪 Running tests..."
