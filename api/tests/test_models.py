@@ -14,13 +14,13 @@ class TestModels:
     
     def test_department_creation(self, department, campus):
         """Test department model creation and relationships"""
-        assert str(department) == "Computer Science"
+        assert str(department) == "College of Information and Communications Technology"
         assert department.campus == campus
         assert department.code == "CS"
     
     def test_course_creation(self, course, department):
         """Test course model creation"""
-        assert str(course) == "Bachelor of Science in Computer Science (BSCS)"
+        assert str(course) == "Bachelor of Science in Information Technology (BSIT)"
         assert course.department == department
     
     def test_student_creation(self, student, campus, department):

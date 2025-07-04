@@ -136,11 +136,11 @@ class TestDepartmentAPI:
     
     def test_search_departments(self, authenticated_client, department):
         """Test searching departments"""
-        url = '/api/departments/?search=Computer'
+        url = '/api/departments/?search=Information'
         response = authenticated_client.get(url)
         
         assert response.status_code == status.HTTP_200_OK
-        # Should find the Computer Science department
+        # Should find the CICT department
         assert len(response.data['results']) >= 1
 
 

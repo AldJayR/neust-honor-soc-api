@@ -44,7 +44,7 @@ def department(db, campus):
     """Create a test department"""
     from api.models import Department
     return Department.objects.create(
-        name="Computer Science",
+        name="College of Information and Communications Technology",
         code="CS",
         campus=campus
     )
@@ -55,8 +55,8 @@ def course(db, department):
     """Create a test course"""
     from api.models import Course
     return Course.objects.create(
-        name="Bachelor of Science in Computer Science",
-        code="BSCS",
+        name="Bachelor of Science in Information Technology",
+        code="BSIT",
         department=department
     )
 
