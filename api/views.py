@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from .models import Campus, Department, Course, Student, GWARecord, HonorSocietyOfficer
 from .serializers import (
     CampusSerializer,
@@ -16,6 +17,7 @@ from .serializers import (
     HonorSocietyOfficerSerializer,
     UserSerializer
 )
+from django.utils import timezone
 
 # Create your views here.
 
@@ -90,7 +92,7 @@ def user_profile(request):
         })
     except HonorSocietyOfficer.DoesNotExist:
         return Response({'error': 'User is not an officer.'}, status=403)
-    
+
 # CRUD ViewSets
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -238,4 +240,70 @@ class HonorSocietyOfficerViewSet(BaseViewSet):
             filters['is_active'] = is_active.lower() == 'true'
         
         return queryset.filter(**filters) if filters else queryset
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_view(request):
+    """Register a new honor society officer"""
+    # Extract user data
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    
+    # Extract officer data
+    position = request.data.get('position')
+    campus_id = request.data.get('campus_id')
+    
+    # Validate required fields
+    if not all([username, password, position, campus_id]):
+        return Response({
+            'error': 'Username, password, position, and campus_id are required.'
+        }, status=400)
+    
+    # Check if username already exists
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Username already exists.'}, status=400)
+    
+    # Validate campus exists
+    try:
+        campus = Campus.objects.get(id=campus_id)
+    except Campus.DoesNotExist:
+        return Response({'error': 'Invalid campus ID.'}, status=400)
+    
+    try:
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            email=email or '',
+            first_name=first_name or '',
+            last_name=last_name or ''
+        )
+        
+        # Create honor society officer
+        officer = HonorSocietyOfficer.objects.create(
+            user=user,
+            position=position,
+            campus=campus,
+            is_active=True
+        )
+        
+        # Generate tokens
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            'message': 'Officer registered successfully.',
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': UserSerializer(user).data,
+            'officer': HonorSocietyOfficerSerializer(officer).data
+        }, status=201)
+        
+    except Exception as e:
+        # If officer creation fails, clean up the user
+        if 'user' in locals():
+            user.delete()
+        return Response({'error': 'Registration failed. Please try again.'}, status=500)
 

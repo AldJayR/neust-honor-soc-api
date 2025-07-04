@@ -50,13 +50,14 @@ class GWARecord(models.Model):
         unique_together = ('student', 'semester', 'academic_year')
 
     def __str__(self):
-        return f"{self.student} - {self.semester} {self.academic_year}: {self.gwa}"
+        return f"{self.student} - {self.semester} {self.academic_year}: {self.gwa:.2f}"
     
 class HonorSocietyOfficer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     position = models.CharField(max_length=50)
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)  # Admin verification required
 
     def __str__(self):
         return f"{self.user.username} - {self.position} ({self.campus.name})"

@@ -59,16 +59,26 @@ coverage.xml
 *.py,cover
 .hypothesis/
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
 # Pytest
 .pytest_cache/
+.pytest/
+test-results/
+junit.xml
+
+# Test coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.lcov
+
+# Test databases
+test_*.db
+test.db
+*.test.db
+
+# Test artifacts
+.testmondata
 
 # Django migrations
 **/migrations/

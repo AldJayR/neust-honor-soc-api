@@ -7,6 +7,7 @@ from .views import (
     StudentViewSet,
     GWARecordViewSet,
     HonorSocietyOfficerViewSet,
+    register_view,
     login_view,
     logout_view,
     token_refresh_view,
@@ -24,6 +25,7 @@ router.register(r'officers', HonorSocietyOfficerViewSet)
 
 urlpatterns = [
     # Custom Authentication endpoints (Honor Society specific)
+    path('auth/register/', register_view, name='register'),
     path('auth/login/', login_view, name='login'),
     path('auth/logout/', logout_view, name='logout'),
     path('auth/refresh/', token_refresh_view, name='token_refresh'),

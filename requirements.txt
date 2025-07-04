@@ -12,9 +12,11 @@ psycopg2-binary==2.9.9
 whitenoise==6.8.2
 gunicorn==23.0.0
 python-dotenv==1.0.1
+djangorestframework-simplejwt[blacklist]==5.5.0
 
-# Development dependencies (install with pip install -r requirements-dev.txt)
-# pytest==8.3.4
-# pytest-django==4.9.0
-# black==24.10.0
-# flake8==7.1.1
+# Testing dependencies
+pytest==7.4.4
+pytest-django==4.8.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+

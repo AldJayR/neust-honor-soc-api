@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+import sys
+
+# Detect if we're running tests
+TESTING = 'test' in sys.argv or 'pytest' in sys.modules
+
+# Load environment variables from .env file in development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "api",
 ]
@@ -89,8 +101,8 @@ DATABASES = {
     }
 }
 
-# Fallback to SQLite for development
-if os.environ.get('USE_SQLITE', 'False').lower() == 'true':
+# Fallback to SQLite for development or testing
+if os.environ.get('USE_SQLITE', 'False').lower() == 'true' or TESTING:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -178,7 +190,8 @@ CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:
 
 CORS_ALLOWED_CREDENTIALS = True
 
-if not DEBUG:
+# Disable SSL redirects during testing
+if not DEBUG and not TESTING:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
