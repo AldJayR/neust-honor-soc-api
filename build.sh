@@ -41,30 +41,6 @@ echo "👤 Setting up admin user..."
 python manage.py shell -c "
 from django.contrib.auth import get_user_model
 from api.models import Campus, HonorSocietyOfficer
-User = get_user_model()
-
-# Create superuser
-if not User.objects.filter(username='admin').exists():
-    admin_user = User.objects.create_superuser('admin', 'jaexcdev@gmail.com', 'Nothingisleftolse')
-    print('✅ Superuser created: admin')
-    
-    # Create a default campus if none exists
-    if not Campus.objects.exists():
-        campus = Campus.objects.create(name='Main Campus', code='MAIN')
-        print('✅ Default campus created: Main Campus')
-        
-        # Create admin as honor society officer
-        HonorSocietyOfficer.objects.create(
-            user=admin_user,
-            position='System Administrator',
-            campus=campus,
-            is_active=True,
-            is_verified=True
-        )
-        print('✅ Admin honor society officer created')
-else:
-    print('ℹ️  Superuser already exists')
-"
 
 # Run tests to ensure everything works
 echo "🧪 Running tests..."
