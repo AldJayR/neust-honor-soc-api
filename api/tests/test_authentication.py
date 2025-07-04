@@ -89,6 +89,28 @@ class TestAuthentication:
         assert response.status_code == status.HTTP_403_FORBIDDEN
         assert 'error' in response.data
     
+    def test_login_unverified_officer(self, api_client, user, campus):
+        """Test login with unverified officer"""
+        # Create unverified officer
+        from api.models import HonorSocietyOfficer
+        unverified_officer = HonorSocietyOfficer.objects.create(
+            user=user,
+            position="Unverified Officer",
+            campus=campus,
+            is_active=True,
+            is_verified=False
+        )
+        
+        url = '/api/auth/login/'
+        data = {
+            'username': 'testuser',
+            'password': 'testpass123'
+        }
+        response = api_client.post(url, data, format='json')
+        
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert 'verification' in response.data['error']
+    
     def test_user_profile(self, authenticated_client):
         """Test user profile endpoint"""
         url = '/api/auth/profile/'
@@ -136,6 +158,7 @@ class TestAuthentication:
         
         assert verify_response.status_code == status.HTTP_200_OK
 
+    @pytest.mark.django_db
     def test_register_success(self, api_client, campus):
         """Test successful officer registration"""
         url = '/api/auth/register/'
@@ -151,11 +174,15 @@ class TestAuthentication:
         response = api_client.post(url, data, format='json')
         
         assert response.status_code == status.HTTP_201_CREATED
-        assert 'access' in response.data
-        assert 'refresh' in response.data
+        # No tokens should be returned since user needs verification
+        assert 'access' not in response.data
+        assert 'refresh' not in response.data
         assert response.data['user']['username'] == 'newofficer'
         assert response.data['officer']['position'] == 'Secretary'
+        assert response.data['officer']['is_verified'] == False
+        assert 'verification' in response.data['message']
     
+    @pytest.mark.django_db
     def test_register_duplicate_username(self, api_client, campus):
         """Test registration with existing username"""
         # Create a user first
@@ -174,6 +201,7 @@ class TestAuthentication:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'Username already exists' in response.data['error']
     
+    @pytest.mark.django_db
     def test_register_missing_fields(self, api_client):
         """Test registration with missing required fields"""
         url = '/api/auth/register/'
@@ -183,6 +211,7 @@ class TestAuthentication:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'required' in response.data['error']
     
+    @pytest.mark.django_db
     def test_register_invalid_campus(self, api_client):
         """Test registration with invalid campus ID"""
         url = '/api/auth/register/'

@@ -83,7 +83,8 @@ def honor_society_officer(db, user, campus):
         user=user,
         position="President",
         campus=campus,
-        is_active=True
+        is_active=True,
+        is_verified=True  # Make sure the test officer is verified
     )
 
 

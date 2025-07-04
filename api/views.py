@@ -42,6 +42,9 @@ def login_view(request):
 
     if not member.is_active:
         return Response({'error': 'User is not an active officer.'}, status=403)
+    
+    if not member.is_verified:
+        return Response({'error': 'Your account is pending admin verification.'}, status=403)
 
     refresh = RefreshToken.for_user(user)
     return Response({
@@ -282,21 +285,17 @@ def register_view(request):
             last_name=last_name or ''
         )
         
-        # Create honor society officer
+        # Create honor society officer (unverified by default)
         officer = HonorSocietyOfficer.objects.create(
             user=user,
             position=position,
             campus=campus,
-            is_active=True
+            is_active=True,
+            is_verified=False  # Requires admin verification
         )
         
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
-        
         return Response({
-            'message': 'Officer registered successfully.',
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            'message': 'Officer registered successfully. Please wait for admin verification before you can login.',
             'user': UserSerializer(user).data,
             'officer': HonorSocietyOfficerSerializer(officer).data
         }, status=201)

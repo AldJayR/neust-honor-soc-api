@@ -58,5 +58,5 @@ class HonorSocietyOfficerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HonorSocietyOfficer
-        fields = ['id', 'user', 'position', 'campus', 'is_active']
-        read_only_fields = ['is_active']
+        fields = ['id', 'user', 'position', 'campus', 'is_active', 'is_verified']
+        read_only_fields = ['is_active', 'is_verified']
